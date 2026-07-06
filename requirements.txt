@@ -132,3 +132,5 @@ zipp==4.1.0
 fastapi
 streamlit
 reportlab
+
+psycopg[binary]

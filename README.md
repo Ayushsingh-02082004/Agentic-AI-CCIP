@@ -165,7 +165,18 @@ streamlit run frontend/app.py --server.port 8501
 ```
 - Streamlit Web Dashboard will open at: `http://localhost:8501`
 
+### 3. Running with Docker Compose (Local or EC2)
+Alternatively, you can build and run all services (PostgreSQL, FastAPI, and Streamlit) inside isolated container environments:
+```bash
+# Build and spin up containers in detached mode
+docker-compose up -d --build
+```
+- The database is automatically initialized and data is ingested on first run.
+- Streamlit will be available at: `http://localhost:8501`
+- FastAPI Docs will be available at: `http://localhost:8000/docs`
+
 ---
+
 
 ## 🌿 Git Staging Branches
 

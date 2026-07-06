@@ -134,3 +134,5 @@ streamlit
 reportlab
 
 psycopg[binary]
+
+sentence-transformers

@@ -13,5 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Default command (uses shell form to allow variable expansion, falls back to 8000)
-CMD uvicorn backend.api.app:app --host 0.0.0.0 --port ${PORT:-8000}
+# Make startup scripts executable
+RUN chmod +x start_backend.sh start_frontend.sh
+
+# Default: start FastAPI backend
+# Override with: sh start_frontend.sh for Streamlit service on Railway
+CMD ["sh", "start_backend.sh"]

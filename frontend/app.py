@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="BNP Paribas Churn Intelligence Dashboard",
     page_icon="🟢",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 import os
@@ -21,63 +21,128 @@ API_URL = os.getenv("BACKEND_API_URL", "http://localhost:8000/api")
 # Design and style customizations
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+    
     .main {
-        background-color: #FAFAFA;
+        background-color: #F8FAFC;
     }
-    h1 {
-        color: #007A48; /* BNP Green */
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-weight: 700;
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Outfit', 'Segoe UI', sans-serif;
     }
-    h2, h3 {
-        color: #222222;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+    body, p, span, div, button, label {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
     }
+    
     .kpi-card {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        border-left: 5px solid #007A48;
+        background: linear-gradient(135deg, #ffffff 0%, #fcfdfd 100%);
+        padding: 22px 15px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.01);
+        border: 1px solid #E2E8F0;
+        border-top: 5px solid #007A48;
         text-align: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 36px rgba(0, 122, 72, 0.06), 0 6px 16px rgba(0, 0, 0, 0.02);
+        border-color: #CBD5E1;
+    }
+    
+    .kpi-card-total { border-top-color: #007A48; }
+    .kpi-card-churned { border-top-color: #EF4444; }
+    .kpi-card-rate { border-top-color: #F59E0B; }
+    .kpi-card-tenure { border-top-color: #3B82F6; }
+    
     .kpi-title {
-        font-size: 14px;
-        color: #666666;
+        font-size: 12px;
+        color: #64748B;
         text-transform: uppercase;
         font-weight: 600;
-        margin-bottom: 5px;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
     }
+    
     .kpi-value {
-        font-size: 28px;
-        color: #222222;
+        font-size: 32px;
+        color: #0F172A;
         font-weight: 700;
+        font-family: 'Outfit', sans-serif;
     }
+    
     .trace-card {
         background-color: #FFFFFF;
-        padding: 15px 20px;
-        border-radius: 8px;
-        border: 1px solid #E5E7EB;
-        margin-bottom: 12px;
+        padding: 18px 22px;
+        border-radius: 12px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01), 0 2px 4px -1px rgba(0,0,0,0.01);
+        margin-bottom: 14px;
+        transition: all 0.2s ease;
     }
+    
+    .trace-card:hover {
+        border-color: #CBD5E1;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
+    }
+    
     .badge {
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 12px;
         font-weight: 600;
         display: inline-block;
     }
     .badge-success {
-        background-color: #D1FAE5;
-        color: #065F46;
+        background-color: #DCFCE7;
+        color: #15803D;
     }
     .badge-warning {
         background-color: #FEF3C7;
-        color: #92400E;
+        color: #B45309;
     }
     .badge-danger {
         background-color: #FEE2E2;
-        color: #991B1B;
+        color: #B91C1C;
+    }
+    
+    /* Premium Streamlit Form Customizations */
+    button[kind="primary"] {
+        background-color: #007A48 !important;
+        border-color: #007A48 !important;
+        border-radius: 8px !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 600 !important;
+        padding: 8px 16px !important;
+    }
+    
+    section[data-testid="stSidebar"] {
+        background-color: #F8FAFC !important;
+        border-right: 1px solid #E2E8F0 !important;
+    }
+    
+    div[data-testid="stExpander"] {
+        border-radius: 12px !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01) !important;
+        background-color: #FFFFFF !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stExpander"] p, 
+    div[data-testid="stExpander"] span, 
+    div[data-testid="stExpander"] b, 
+    div[data-testid="stExpander"] strong, 
+    div[data-testid="stExpander"] li,
+    div[data-testid="stExpander"] summary,
+    div[data-testid="stExpander"] div,
+    div[data-testid="stExpander"] label {
+        color: #1E3A8A !important; /* Premium Deep Blue */
+    }
+    div[data-testid="stExpander"] code {
+        color: #0F172A !important;
+        background-color: #F1F5F9 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -89,7 +154,7 @@ def get_stats():
         if response.status_code == 200:
             return response.json()
     except Exception as e:
-        st.sidebar.error(f"Error connecting to backend API: {e}")
+        st.error(f"Error connecting to backend API: {e}")
     return None
 
 # State Initialization
@@ -100,67 +165,20 @@ if "workflow_result" not in st.session_state:
 if "recent_sessions" not in st.session_state:
     st.session_state.recent_sessions = []
 
-# Sidebar panel
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/1/14/Logo_BNP_Paribas.svg", width=180)
-st.sidebar.markdown("### Churn Intelligence Console")
-st.sidebar.markdown(f"**Active Session:** `{st.session_state.session_id}`")
-
-# Ingestion utility
-if st.sidebar.button("⚙️ Ingest/Reset ChromaDB Vector Store"):
-    try:
-        res = requests.post(f"{API_URL}/ingest")
-        if res.status_code == 200:
-            st.sidebar.success("Vector DB Ingestion successfully triggered in the background!")
-        else:
-            st.sidebar.error("Failed to trigger ingestion.")
-    except Exception as e:
-        st.sidebar.error(f"Error: {e}")
-
-# Load recent sessions input
-st.sidebar.markdown("---")
-st.sidebar.markdown("### History Lookup")
-hist_session_input = st.sidebar.text_input("Enter UUID to Load Session", "")
-if hist_session_input:
-    if st.sidebar.button("Load Past Session"):
-        try:
-            res = requests.get(f"{API_URL}/history/{hist_session_input}")
-            if res.status_code == 200:
-                history_data = res.json()
-                if history_data:
-                    latest = history_data[-1]
-                    # Format as workflow response
-                    st.session_state.session_id = hist_session_input
-                    st.session_state.workflow_result = {
-                        "session_id": hist_session_input,
-                        "query_plan": latest.get("query_plan", {}),
-                        "retrieval_context": latest.get("retrieval_context", {}),
-                        "analysis": latest.get("analysis"),
-                        "prediction": latest.get("prediction"),
-                        "recommendation": latest.get("recommendation"),
-                        "validation": latest.get("validation"),
-                        "report": latest.get("report")
-                    }
-                    st.sidebar.success("Session loaded successfully!")
-                else:
-                    st.sidebar.warning("No records found in session.")
-            else:
-                st.sidebar.error("Session not found or invalid UUID.")
-        except Exception as e:
-            st.sidebar.error(f"Error loading session: {e}")
-
-# Reset Session button
-if st.sidebar.button("🆕 Start New Session"):
-    st.session_state.session_id = str(uuid.uuid4())
-    st.session_state.workflow_result = None
-    st.sidebar.info("New session started.")
-
 
 # Fetch Stats for Top Dashboard Bar
 stats = get_stats()
 
 # Main Layout
-st.markdown("<h1>BNP Paribas | Customer Churn Intelligence Dashboard</h1>", unsafe_allow_html=True)
-st.markdown("AI-driven churn analytics, risk prediction, strategy blueprinting, and factual compliance validations.")
+# Header with logo in the top-left
+header_col1, header_col2 = st.columns([1, 6])
+with header_col1:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/8/85/BNP_Paribas_logo.svg", width=110)
+with header_col2:
+    st.markdown("<h1 style='margin: 0; color: #007A48; line-height: 1.1;'>BNP Paribas | Churn Intelligence Dashboard</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #64748B; font-size: 16px; margin-top: 4px; margin-bottom: 0;'>AI-driven churn analytics, risk prediction, strategy blueprinting, and factual compliance validations.</p>", unsafe_allow_html=True)
+
+st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 st.markdown("---")
 
 # Render KPI stats cards if available
@@ -168,28 +186,28 @@ if stats:
     kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
     with kpi_col1:
         st.markdown(f"""
-            <div class='kpi-card'>
+            <div class='kpi-card kpi-card-total'>
                 <div class='kpi-title'>Total Portfolio Clients</div>
                 <div class='kpi-value'>{stats.get('total_customers', 0):,}</div>
             </div>
         """, unsafe_allow_html=True)
     with kpi_col2:
         st.markdown(f"""
-            <div class='kpi-card'>
+            <div class='kpi-card kpi-card-churned'>
                 <div class='kpi-title'>Churned Clients (Historical)</div>
                 <div class='kpi-value'>{stats.get('churned_customers', 0):,}</div>
             </div>
         """, unsafe_allow_html=True)
     with kpi_col3:
         st.markdown(f"""
-            <div class='kpi-card'>
+            <div class='kpi-card kpi-card-rate'>
                 <div class='kpi-title'>Identified Churn Rate</div>
                 <div class='kpi-value'>{stats.get('churn_rate', 0.0)}%</div>
             </div>
         """, unsafe_allow_html=True)
     with kpi_col4:
         st.markdown(f"""
-            <div class='kpi-card'>
+            <div class='kpi-card kpi-card-tenure'>
                 <div class='kpi-title'>Average Client Tenure</div>
                 <div class='kpi-value'>{stats.get('average_tenure', 0.0)} mo</div>
             </div>
@@ -200,12 +218,13 @@ else:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # Main Tabbed Interface
-tab_exec, tab_analytics, tab_trace, tab_guardrails, tab_report = st.tabs([
+tab_exec, tab_analytics, tab_trace, tab_guardrails, tab_report, tab_console = st.tabs([
     "🚀 Execute Analysis Query",
     "📊 Portfolio KPI & Churn Analytics",
     "🔍 Agent Workflow Explainability",
     "🛡️ Guardrails & Compliance Audit",
-    "📄 Executive Report & PDF Export"
+    "📄 Executive Report & PDF Export",
+    "📂 Ingest Custom Dataset"
 ])
 
 # ================= TAB 1: EXECUTE RUN =================
@@ -486,3 +505,24 @@ with tab_report:
                     st.error("Error generating report file. Backend returned failure status.")
             except Exception as e:
                 st.error(f"Failed to connect to backend for PDF download: {e}")
+
+# ================= TAB 6: INGEST CUSTOM DATASET =================
+with tab_console:
+    st.markdown("### 📂 Ingest Custom Dataset")
+    st.markdown("Upload a custom customer churn CSV dataset to parse, embed, and load it into ChromaDB.")
+    
+    uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
+    if uploaded_file is not None:
+        if st.button("🚀 Ingest Custom Dataset", use_container_width=True):
+            with st.spinner("Ingesting & embedding dataset..."):
+                try:
+                    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "text/csv")}
+                    res = requests.post(f"{API_URL}/ingest-file", files=files)
+                    if res.status_code == 200:
+                        st.success(res.json().get("message", "Dataset successfully ingested!"))
+                        st.rerun()
+                    else:
+                        detail = res.json().get('detail', 'Unknown error')
+                        st.error(f"Ingestion failed: {detail}")
+                except Exception as e:
+                    st.error(f"Error: {e}")

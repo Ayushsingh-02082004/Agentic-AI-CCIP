@@ -6,8 +6,8 @@ services:
     container_name: customer_churn_app
     restart: always
     ports:
-      - "8501:8501"   # Streamlit (public-facing)
-      - "8000:8000"   # FastAPI  (for local debugging/testing)
+      - "8501:8501" # Streamlit (public-facing)
+      - "8000:8000" # FastAPI  (for local debugging/testing)
     environment:
       # PostgreSQL — runs inside the same container
       DATABASE_HOST: localhost

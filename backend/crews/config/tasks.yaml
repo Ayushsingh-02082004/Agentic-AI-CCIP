@@ -7,11 +7,9 @@ understand_query:
     {user_query}
 
     Rules:
-
-    - Recommendation always requires Prediction.
-    - Validation requires Recommendation.
-    - Reporting requires Validation.
-    - Data Analysis is required before Prediction.
+    - For any query related to churn analysis, factors, trends, or retention strategies (whether general or customer-specific), you MUST enable all workflow stages: needs_data_analysis, needs_prediction, needs_recommendation, needs_validation, and needs_report (set them all to true).
+    - If the query is general (no specific customer ID mentioned), still set needs_prediction and needs_recommendation to true. The system is designed to automatically select a representative customer from the retrieved cohort for these stages.
+    - Only set these flags to false if the query is completely unrelated to customer churn or retention.
 
     Determine:
     1. intent

@@ -4,8 +4,9 @@ import tempfile
 import threading
 from datetime import datetime
 from typing import Optional, Dict, Any, List
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+import io
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -320,3 +321,27 @@ def trigger_ingestion(background_tasks: BackgroundTasks):
         return {"status": "success", "message": "Dataset ingestion started in background."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to trigger ingestion: {e}")
+
+
+@app.post("/api/ingest-file")
+async def upload_and_ingest_file(file: UploadFile = File(...)):
+    """
+    Upload a CSV dataset and ingest it into ChromaDB vector store.
+    Clears existing database collection before saving.
+    """
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
+    try:
+        contents = await file.read()
+        csv_data = io.BytesIO(contents)
+        
+        ingestion = IngestionService()
+        ingestion.ingest_csv(csv_data)
+        
+        return {"status": "success", "message": f"Dataset '{file.filename}' successfully ingested into ChromaDB."}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to ingest dataset: {e}")

@@ -1,4 +1,4 @@
-from backend.crews.config.database import get_connection
+from database.database import get_connection
 from backend.schemas.memory_record import MemoryRecord
 import json
 

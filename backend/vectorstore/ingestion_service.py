@@ -13,10 +13,16 @@ class IngestionService:
         self.db = ChromaService()
 
     def ingest(self):
+        self.ingest_csv("datasets/BNPParibas_Data.csv")
 
-        df = pd.read_csv(
-            "datasets/BNPParibas_Data.csv"
-        )
+    def ingest_csv(self, file_path_or_buffer):
+        df = pd.read_csv(file_path_or_buffer)
+
+        # Validate required columns
+        required_cols = {"customer_id", "age", "tenure_months", "support_tickets", "contract_type", "monthly_charges", "total_charges", "internet_service", "payment_method", "churn"}
+        missing = required_cols - set(df.columns)
+        if missing:
+            raise ValueError(f"Missing required CSV columns: {', '.join(missing)}")
 
         ids = []
         docs = []
@@ -119,4 +125,4 @@ class IngestionService:
             metadata
         )
 
-        print("Vector Database Created Successfully")
+        print("Vector Database Created/Updated Successfully")

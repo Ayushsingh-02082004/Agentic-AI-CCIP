@@ -15,7 +15,7 @@ st.set_page_config(
 import os
 
 # API endpoint URL
-API_URL = os.getenv("BACKEND_API_URL", "http://localhost:8000/api")
+API_URL = os.getenv("BACKEND_API_URL", "http://127.0.0.1:8000/api")
 
 
 # Design and style customizations
@@ -295,7 +295,7 @@ with tab_analytics:
                 "Risk Level": list(r_dist.keys()),
                 "Client Count": list(r_dist.values())
             })
-            st.dataframe(df_dist, hide_index=True, use_container_width=True)
+            st.dataframe(df_dist, hide_index=True, width="stretch")
             
             st.markdown("#### Database Summary Stats")
             st.write(f"- **Avg Age:** {stats.get('average_age')} years")
@@ -304,7 +304,7 @@ with tab_analytics:
             
         with charts_col:
             st.markdown("#### Risk Category Segments")
-            st.bar_chart(data=df_dist, x="Risk Level", y="Client Count", color="#007A48", use_container_width=True)
+            st.bar_chart(data=df_dist, x="Risk Level", y="Client Count", color="#007A48", width="stretch")
             
         # Draw all customer metadata lookup
         st.markdown("---")
@@ -323,7 +323,7 @@ with tab_analytics:
                         "monthly_charges": "Monthly Charges",
                         "churn": "Churn Status"
                     })
-                    st.dataframe(df_cust, use_container_width=True)
+                    st.dataframe(df_cust, width="stretch")
             except Exception as e:
                 st.error(f"Error fetching customer list: {e}")
     else:
@@ -499,7 +499,7 @@ with tab_report:
                         data=pdf_res.content,
                         file_name=f"BNP_Paribas_Churn_Report_{res.get('session_id')}.pdf",
                         mime="application/pdf",
-                        use_container_width=True
+                        width="stretch"
                     )
                 else:
                     st.error("Error generating report file. Backend returned failure status.")
@@ -513,7 +513,7 @@ with tab_console:
     
     uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
     if uploaded_file is not None:
-        if st.button("🚀 Ingest Custom Dataset", use_container_width=True):
+        if st.button("🚀 Ingest Custom Dataset", width="stretch"):
             with st.spinner("Ingesting & embedding dataset..."):
                 try:
                     files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "text/csv")}

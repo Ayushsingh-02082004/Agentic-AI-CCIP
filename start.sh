@@ -32,7 +32,20 @@ uvicorn backend.api.app:app --host 0.0.0.0 --port 8000 &
 BACKEND_PID=$!
 
 echo "Waiting for backend to be ready..."
-sleep 5
+python -c "
+import time, urllib.request
+for i in range(60):
+    try:
+        response = urllib.request.urlopen('http://localhost:8000/health')
+        if response.getcode() == 200:
+            print('Backend is ready!')
+            exit(0)
+    except Exception:
+        pass
+    time.sleep(1)
+print('Backend failed to start in time.')
+exit(1)
+"
 
 echo "Starting Streamlit frontend on port ${PORT:-8501}..."
 exec streamlit run frontend/app.py \
